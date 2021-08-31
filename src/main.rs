@@ -1,13 +1,17 @@
 use std::net::{TcpListener, TcpStream};
 use std::io::{self, Write};
-use std::thread;
 use rand::{thread_rng, RngCore};
 
 fn main() -> io::Result<()>{
+    let thread_num = num_cpus::get();
+    let pool = threadpool::Builder::new()
+        .num_threads(thread_num)
+        .build();
+
     let listener = TcpListener::bind("127.0.0.1:11451")?;
 
     for stream in listener.incoming() {
-        thread::spawn(move || {
+        pool.execute(move || {
             handle(stream.unwrap()).unwrap();
         });
     }
