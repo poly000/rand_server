@@ -19,8 +19,8 @@ fn handle(mut stream: TcpStream) -> io::Result<()> {
     let mut rng = thread_rng();
     let mut buf = [0;1024];
 
-    rng.fill_bytes(&mut buf);
-    stream.write_all(&buf)?;
-
-    Ok(())
+    loop {
+        rng.fill_bytes(&mut buf);
+        stream.write_all(&buf)?;
+    }
 }
